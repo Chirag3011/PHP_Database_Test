@@ -1,23 +1,39 @@
 <?php
-$firstName = $_POST['firstName'];
-$lastName = $_POST['lastName'];
-$gender = $_POST['gender'];
-$email = $_POST['email'];
-$password = $_POST['password'];
-$number = $_POST['number'];
 
-// Database connection
-$conn = new mysqli('sql6.freesqldatabase.com', 'sql6689995', 'RWvUchad3D', 'sql6689995');
-if ($conn->connect_error) {
-    echo "$conn->connect_error";
-    die("Connection Failed : " . $conn->connect_error);
-} else {
-    $stmt = $conn->prepare("INSERT INTO registration (firstName, lastName, gender, email, password, number) VALUES (?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssssi", $firstName, $lastName, $gender, $email, $password, $number);
-    $execval = $stmt->execute();
-    echo $execval;
-    echo "Registration successfully...";
-    $stmt->close();
-    $conn->close();
+// Error reporting for development (comment out for production)
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Check for POST request
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Sanitize user input to prevent SQL injection
+    $firstName = mysqli_real_escape_string($conn, $_POST['firstName']);
+    $lastName = mysqli_real_escape_string($conn, $_POST['lastName']);
+    $gender = mysqli_real_escape_string($conn, $_POST['gender']);
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $password = mysqli_real_escape_string($conn, $_POST['password']);
+    $number = mysqli_real_escape_string($conn, $_POST['number']);
+
+    // Database connection
+    $conn = new mysqli('sql6.freesqldatabase.com', 'sql6689995', 'RWvUchad3', 'sql6689995');
+
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    } else {
+        // Prepared statement for secure insertion
+        $stmt = $conn->prepare("INSERT INTO registration (firstName, lastName, gender, email, password, number) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssssi", $firstName, $lastName, $gender, $email, $password, $number);
+        $execval = $stmt->execute();
+
+        if ($execval) {
+            echo "Registration successful!";
+        } else {
+            echo "Registration failed.";
+        }
+
+        $stmt->close();
+        $conn->close();
+    }
 }
+
 ?>
