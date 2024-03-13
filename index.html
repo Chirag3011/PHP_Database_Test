@@ -12,7 +12,7 @@
             <h1>Registration Form</h1>
           </div>
           <div class="panel-body">
-            <form action="connect.php" method="post">
+            <<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
               <div class="form-group">
                 <label for="firstName">First Name</label>
                 <input
