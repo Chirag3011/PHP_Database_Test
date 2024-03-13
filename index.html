@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
   <head>
     <title>Registration Page</title>
@@ -110,4 +110,59 @@
   </div>
 </div>
   </body>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registration Page</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="row col-md-6 col-md-offset-3">
+            <div class="panel panel-primary">
+                <div class="panel-heading text-center">
+                    <h1>Registration Form</h1>
+                </div>
+                <div class="panel-body">
+                    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input type="text" class="form-control" id="firstName" name="firstName" />
+                        </div>
+                        <!-- other form fields go here -->
+                        <input type="submit" class="btn btn-primary" />
+                    </form>
+                </div>
+                <div class="panel-footer text-right">
+                    <small>&copy; Technical Babaji</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <?php
+    // PHP code to handle form submission
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $firstName = $_POST['firstName'];
+        // Retrieve other form fields similarly
+        
+        // Database connection
+        $conn = new mysqli('sql6.freesqldatabase.com', 'sql6689995', 'RWvUchad3', 'sql6689995');
+        if ($conn->connect_error) {
+            echo "$conn->connect_error";
+            die("Connection Failed : " . $conn->connect_error);
+        } else {
+            $stmt = $conn->prepare("INSERT INTO registration (firstName, lastName, gender, email, password, number) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("sssssi", $firstName, $lastName, $gender, $email, $password, $number);
+            $execval = $stmt->execute();
+            echo $execval;
+            echo "Registration successfully...";
+            $stmt->close();
+            $conn->close();
+        }
+    }
+    ?>
+</body>
 </html>
