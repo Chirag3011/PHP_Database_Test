@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $number = mysqli_real_escape_string($conn, $_POST['number']);
 
     // Database connection
-    $conn = new mysqli('sql6.freesqldatabase.com', 'sql6689995', 'RWvUchad3', 'sql6689995');
+    $conn = new mysqli('mysql-mrx3011-mrxdatabase-dfe6.a.aivencloud.com', 'avnadmin', 'AVNS_NrMfXS0QkXf8GE1KTQF', 'defaultdb');
 
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
