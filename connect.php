@@ -1,39 +1,21 @@
 <?php
 
-// Error reporting for development (comment out for production)
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+$uri = "mysql://avnadmin:AVNS_NrMfXS0QkXf8GE1KTQF@mysql-mrx3011-mrxdatabase-dfe6.a.aivencloud.com:10955/defaultdb?ssl-mode=REQUIRED";
 
-// Check for POST request
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Sanitize user input to prevent SQL injection
-    $firstName = mysqli_real_escape_string($conn, $_POST['firstName']);
-    $lastName = mysqli_real_escape_string($conn, $_POST['lastName']);
-    $gender = mysqli_real_escape_string($conn, $_POST['gender']);
-    $email = mysqli_real_escape_string($conn, $_POST['email']);
-    $password = mysqli_real_escape_string($conn, $_POST['password']);
-    $number = mysqli_real_escape_string($conn, $_POST['number']);
+$fields = parse_url($uri);
 
-    // Database connection
-    $conn = new mysqli('mysql-mrx3011-mrxdatabase-dfe6.a.aivencloud.com', 'avnadmin', 'AVNS_NrMfXS0QkXf8GE1KTQF', 'defaultdb');
+// build the DSN including SSL settings
+$conn = "mysql:";
+$conn .= "host=" . $fields["host"];
+$conn .= ";port=" . $fields["port"];;
+$conn .= ";dbname=defaultdb";
+$conn .= ";sslmode=verify-ca;sslrootcert=ca.pem";
 
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    } else {
-        // Prepared statement for secure insertion
-        $stmt = $conn->prepare("INSERT INTO registration (firstName, lastName, gender, email, password, number) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("sssssi", $firstName, $lastName, $gender, $email, $password, $number);
-        $execval = $stmt->execute();
+try {
+  $db = new PDO($conn, $fields["user"], $fields["pass"]);
 
-        if ($execval) {
-            echo "Registration successful!";
-        } else {
-            echo "Registration failed.";
-        }
-
-        $stmt->close();
-        $conn->close();
-    }
+  $stmt = $db->query("SELECT VERSION()");
+  print($stmt->fetch()[0]);
+} catch (Exception $e) {
+  echo "Error: " . $e->getMessage();
 }
-
-?>
